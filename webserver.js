@@ -166,6 +166,18 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         }}));
     }
     obj.app.disable('x-powered-by');
+
+    // Modernization: emit HTTP Strict-Transport-Security on secure responses.
+    // Enabled by default; disable with "hsts": false, tune with "hsts": { "maxAge", "includeSubDomains", "preload" } in config.
+    if (args.hsts !== false) {
+        var hstsCfg = (typeof args.hsts == 'object' && args.hsts != null) ? args.hsts : {};
+        var hstsMaxAge = (typeof hstsCfg.maxage == 'number') ? hstsCfg.maxage : 31536000;
+        var hstsValue = 'max-age=' + hstsMaxAge + (hstsCfg.includesubdomains === false ? '' : '; includeSubDomains') + (hstsCfg.preload === true ? '; preload' : '');
+        obj.app.use(function (req, res, next) {
+            if ((req.secure === true) || (args.tlsoffload != null && args.tlsoffload != false)) { res.set('Strict-Transport-Security', hstsValue); }
+            next();
+        });
+    }
     obj.tlsServer = null;
     obj.tcpServer = null;
     obj.certificates = certificates;
@@ -4133,8 +4145,8 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         if (domain == null) { parent.debug('web', 'handleManifestRequest: no domain'); res.sendStatus(404); return; }
         parent.debug('web', 'handleManifestRequest()');
         var manifest = {
-            "name": (domain.title != null) ? domain.title : 'MeshCentral',
-            "short_name": (domain.title != null) ? domain.title : 'MeshCentral',
+            "name": (domain.title != null) ? domain.title : 'StressMan',
+            "short_name": (domain.title != null) ? domain.title : 'StressMan',
             "description": "Open source web based, remote computer management.",
             "scope": ".",
             "start_url": "/",
@@ -6086,7 +6098,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         try {
             const deviceCookie = parent.encodeCookie({ a: 'checkAuth', c: cookie.c, u: cookie.u, n: cookie.n, s: cookie.s });
             var code = Buffer.from(cookie.c, 'base64').toString();
-            var payload = { notification: { title: (domain.title ? domain.title : 'MeshCentral'), body: "Authentication - " + code }, data: { url: '2fa://auth?code=' + cookie.c + '&c=' + deviceCookie } };
+            var payload = { notification: { title: (domain.title ? domain.title : 'StressMan'), body: "Authentication - " + code }, data: { url: '2fa://auth?code=' + cookie.c + '&c=' + deviceCookie } };
             var options = { priority: 'High', timeToLive: 60 }; // TTL: 1 minute
             parent.firebase.sendToDevice(user.otpdev, payload, options, function (id, err, errdesc) {
                 if (err == null) {
@@ -7120,7 +7132,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
             // Setup the HTTP server with TLS, use only TLS 1.2 and higher with perfect forward secrecy (PFS).
             //const tlsOptions = { cert: obj.certificates.web.cert, key: obj.certificates.web.key, ca: obj.certificates.web.ca, rejectUnauthorized: true, ciphers: "HIGH:!aNULL:!eNULL:!EXPORT:!RSA:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA", secureOptions: constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_COMPRESSION | constants.SSL_OP_CIPHER_SERVER_PREFERENCE | constants.SSL_OP_NO_TLSv1 | constants.SSL_OP_NO_TLSv1_1 }; // This does not work with TLS 1.3
-            const tlsOptions = { cert: obj.certificates.web.cert, key: obj.certificates.web.key, ca: obj.certificates.web.ca, rejectUnauthorized: true, ciphers: ciphers, secureOptions: constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_COMPRESSION | constants.SSL_OP_CIPHER_SERVER_PREFERENCE | constants.SSL_OP_NO_TLSv1 | constants.SSL_OP_NO_TLSv1_1 };
+            const tlsOptions = { cert: obj.certificates.web.cert, key: obj.certificates.web.key, ca: obj.certificates.web.ca, rejectUnauthorized: true, minVersion: 'TLSv1.2', ciphers: ciphers, secureOptions: constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_COMPRESSION | constants.SSL_OP_CIPHER_SERVER_PREFERENCE | constants.SSL_OP_NO_TLSv1 | constants.SSL_OP_NO_TLSv1_1 };
             if (obj.tlsSniCredentials != null) { tlsOptions.SNICallback = TlsSniCallback; } // We have multiple web server certificate used depending on the domain name
             obj.tlsServer = require('https').createServer(tlsOptions, obj.app);
             obj.tlsServer.on('secureConnection', function () { /*console.log('tlsServer secureConnection');*/ });
@@ -9081,7 +9093,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
                                                 // Cause push notification to device
                                                 const code = Buffer.from(obj.common.zeroPad(getRandomSixDigitInteger(), 6)).toString('base64');
                                                 const authCookie = parent.encodeCookie({ a: 'checkAuth', c: code, u: user._id, n: user.otpdev });
-                                                var payload = { notification: { title: "MeshCentral", body: user.name + " authentication" }, data: { url: '2fa://auth?code=' + code + '&c=' + authCookie } };
+                                                var payload = { notification: { title: "StressMan", body: user.name + " authentication" }, data: { url: '2fa://auth?code=' + code + '&c=' + authCookie } };
                                                 var options = { priority: 'High', timeToLive: 60 }; // TTL: 1 minute
                                                 parent.firebase.sendToDevice(user.otpdev, payload, options, function (id, err, errdesc) {
                                                     if (err == null) { parent.debug('email', 'Successfully auth check send push message to device'); } else { parent.debug('email', 'Failed auth check push message to device, error: ' + errdesc); }
@@ -9262,7 +9274,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
                                     // Cause push notification to device
                                     const code = Buffer.from(obj.common.zeroPad(getRandomSixDigitInteger(), 6)).toString('base64');
                                     const authCookie = parent.encodeCookie({ a: 'checkAuth', c: code, u: user._id, n: user.otpdev });
-                                    var payload = { notification: { title: "MeshCentral", body: user.name + " authentication" }, data: { url: '2fa://auth?code=' + code + '&c=' + authCookie } };
+                                    var payload = { notification: { title: "StressMan", body: user.name + " authentication" }, data: { url: '2fa://auth?code=' + code + '&c=' + authCookie } };
                                     var options = { priority: 'High', timeToLive: 60 }; // TTL: 1 minute
                                     parent.firebase.sendToDevice(user.otpdev, payload, options, function (id, err, errdesc) {
                                         if (err == null) { parent.debug('email', 'Successfully auth check send push message to device'); } else { parent.debug('email', 'Failed auth check push message to device, error: ' + errdesc); }
@@ -10339,13 +10351,13 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         if (req.query.minify == '1') { minify = true; } else if (req.query.minify == '0') { minify = false; }
         xargs.min = minify ? '-min' : '';
         xargs.titlehtml = domain.titlehtml;
-        xargs.title = (domain.title != null) ? domain.title : 'MeshCentral';
+        xargs.title = (domain.title != null) ? domain.title : 'StressMan';
         if (
             ((page == 'login2') && (domain.loginpicture == null) && (domain.titlehtml == null)) ||
             ((page != 'login2') && (domain.titlepicture == null) && (domain.titlehtml == null))
         ) {
             if (domain.title == null) {
-                xargs.title1 = 'MeshCentral';
+                xargs.title1 = 'StressMan';
                 xargs.title2 = '';
             } else {
                 xargs.title1 = domain.title;
