@@ -20,6 +20,21 @@ jobs:
           grep -v -E "meshagent_arm64|meshagent_osx-universal-64" SHA384SUMS.txt > ok.sums
           sha384sum -c ok.sums
 
+      - name: Sign Windows agents with self-signed cert
+        env:
+          AGENT_SIGN_PFX: ${{ secrets.AGENT_SIGN_PFX }}
+          AGENT_SIGN_PASS: ${{ secrets.AGENT_SIGN_PASS }}
+        run: |
+          sudo apt-get install -y osslsigncode > /dev/null
+          echo "$AGENT_SIGN_PFX" | base64 -d > /tmp/codesign.pfx
+          for f in bin/MeshService.exe bin/MeshService64.exe bin/MeshServiceARM64.exe; do
+            osslsigncode sign -pkcs12 /tmp/codesign.pfx -pass "$AGENT_SIGN_PASS" \
+              -n "StressMan Agent" -i https://github.com/fcmatch121 \
+              -in "$f" -out "$f.signed" && mv "$f.signed" "$f"
+            osslsigncode verify "$f" | grep -q "Signature" && echo "signed: $(basename $f)"
+          done
+          rm -f /tmp/codesign.pfx
+
       - name: Replace bundled agents and refresh hashagents.json
         run: |
           for f in silentbin/MeshService.exe silentbin/MeshService64.exe silentbin/MeshServiceARM64.exe silentbin/meshagent_*; do
