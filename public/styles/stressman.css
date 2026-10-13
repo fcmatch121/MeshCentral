@@ -1,0 +1,67 @@
+/* StressMan brand chrome for the modern UI (default3). Loaded after style-bootstrap.css. */
+:root {
+    --sm-bg1: #0f1226;
+    --sm-bg2: #2a1a5e;
+    --sm-bg3: #0e4d64;
+    --sm-accent: #6d8bff;
+    --sm-accent2: #41e0c8;
+}
+
+#masthead {
+    background-color: var(--sm-bg1);
+    background-image: radial-gradient(circle at 85% -40%, rgba(109, 139, 255, 0.45), transparent 55%), linear-gradient(110deg, var(--sm-bg1) 0%, var(--sm-bg2) 55%, var(--sm-bg3) 100%);
+    box-shadow: 0 2px 12px rgba(10, 12, 40, 0.35);
+}
+
+#masthead .title {
+    color: #fff;
+    font-family: "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    background: linear-gradient(90deg, #ffffff 0%, #b9c6ff 60%, var(--sm-accent2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#masthead .title2 {
+    color: rgba(232, 236, 255, 0.75);
+    font-family: "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+    text-shadow: none;
+}
+
+#page_leftbar {
+    background: var(--sm-bg1);
+    background: linear-gradient(to bottom, var(--sm-bg2) 0%, var(--sm-bg1) 100%);
+    border-right: 1px solid rgba(109, 139, 255, 0.18);
+}
+
+#page_leftbar .nav-link {
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#page_leftbar .nav-link:hover {
+    background-color: rgba(109, 139, 255, 0.18);
+    border-radius: 10px 0 0 10px;
+}
+
+nav .lbbuttonsel,
+nav .lbbuttonsel2 {
+    border-radius: 10px 0 0 10px;
+    background: linear-gradient(90deg, #ffffff 0%, #e8ecff 100%);
+    color: var(--sm-bg2) !important;
+    box-shadow: inset 3px 0 0 var(--sm-accent2);
+}
+
+#footer {
+    background-color: var(--sm-bg1);
+    background-image: linear-gradient(90deg, var(--sm-bg1) 0%, var(--sm-bg2) 60%, var(--sm-bg3) 100%);
+    border-top: 1px solid rgba(109, 139, 255, 0.18);
+}
+
+#footer a,
+#footer a:hover {
+    color: var(--sm-accent2);
+}
