@@ -24,7 +24,13 @@ jobs:
         run: |
           for f in silentbin/MeshService.exe silentbin/MeshService64.exe silentbin/MeshServiceARM64.exe silentbin/meshagent_*; do
             case "$(basename $f)" in *SUMS*) continue;; esac
-            cp -f "$f" "agents/agents_sep2026/$(basename $f)"
+            bn="$(basename $f)"
+            cp -f "$f" "agents/agents_sep2026/$bn"
+            if [ -f "agents/$bn" ]; then cp -f "$f" "agents/$bn"; fi
+          done
+          # 루트 agents/의 meshagent_* (리눅스/맥/bsd)도 전부 교체 — 서빙·self-update 경로
+          for bn in meshagent_aarch64 meshagent_alpine-x86-64 meshagent_armhf meshagent_freebsd_x86-64 meshagent_osx-arm-64 meshagent_osx-x86-64 meshagent_x86 meshagent_x86-64 meshagent_x86-64_nokvm meshagent_x86_nokvm; do
+            cp -f "silentbin/$bn" "agents/$bn"
           done
           python3 - <<'PY'
           import re, json, hashlib, time, collections, os
