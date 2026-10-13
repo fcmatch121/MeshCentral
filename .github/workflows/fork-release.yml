@@ -42,11 +42,11 @@ jobs:
         with:
           tag_name: ${{ env.TAG }}
           target_commitish: ${{ github.sha }}
-          name: MeshCentral ${{ env.VERSION }} (fcmatch121 build)
+          name: StressMan ${{ env.VERSION }} (fcmatch121 build)
           body_path: dist/RELEASE_NOTES.md
           files: |
-            dist/meshcentral-${{ env.VERSION }}.tar.gz
-            dist/meshcentral-${{ env.VERSION }}.zip
-            dist/meshcentral-${{ env.VERSION }}-docker-image.tar.gz
-            dist/MeshCentral-${{ env.VERSION }}-Manual-ko.md
+            dist/stressman-${{ env.VERSION }}.tar.gz
+            dist/stressman-${{ env.VERSION }}.zip
+            dist/stressman-${{ env.VERSION }}-docker-image.tar.gz
+            dist/StressMan-${{ env.VERSION }}-Manual-ko.md
             dist/SHA256SUMS.txt

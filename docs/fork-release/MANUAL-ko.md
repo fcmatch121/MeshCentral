@@ -1,7 +1,7 @@
-# MeshCentral 설치 및 사용 설명서 (fcmatch121 빌드)
+# StressMan 설치 및 사용 설명서 (fcmatch121 빌드)
 
-이 설명서는 `fcmatch121/MeshCentral` GitHub 릴리스에 첨부된 파일로 MeshCentral 서버를 설치하고 운영하는 방법을 설명합니다.
-원본 프로젝트 문서: <https://ylianst.github.io/MeshCentral/>
+이 설명서는 `fcmatch121/MeshCentral` GitHub 릴리스에 첨부된 파일로 StressMan 서버를 설치하고 운영하는 방법을 설명합니다. StressMan은 MeshCentral을 기반으로 하며, 기존 MeshCentral 에이전트·설정·데이터와 호환되도록 내부 경로(`meshcentral/`, `meshcentral-data/` 등)와 명령은 그대로 유지합니다.
+원본(MeshCentral) 프로젝트 문서: <https://ylianst.github.io/MeshCentral/>
 
 ---
 
@@ -9,16 +9,16 @@
 
 | 파일 | 용도 |
 |------|------|
-| `meshcentral-<버전>.tar.gz` | Linux/macOS용 실행 번들 |
-| `meshcentral-<버전>.zip` | Windows용 실행 번들 (내용은 tar.gz와 동일) |
-| `meshcentral-<버전>-docker-image.tar.gz` | Docker 이미지 (`meshcentral:<버전>`) |
-| `MeshCentral-<버전>-Manual-ko.md` | 이 설명서 |
+| `stressman-<버전>.tar.gz` | Linux/macOS용 실행 번들 |
+| `stressman-<버전>.zip` | Windows용 실행 번들 (내용은 tar.gz와 동일) |
+| `stressman-<버전>-docker-image.tar.gz` | Docker 이미지 (`stressman:<버전>`) |
+| `StressMan-<버전>-Manual-ko.md` | 이 설명서 |
 | `SHA256SUMS.txt` | 파일 체크섬 |
 
 실행 번들 압축을 풀면 다음 구조가 됩니다.
 
 ```
-meshcentral-<버전>/
+stressman-<버전>/
 ├── meshcentral/          # 서버 프로그램 (운영용 node_modules 포함)
 ├── config.sample.json    # 설정 파일 예시
 └── MANUAL-ko.md          # 이 설명서
@@ -35,7 +35,7 @@ meshcentral-<버전>/
 ```bash
 sha256sum -c SHA256SUMS.txt --ignore-missing
 ```
-Windows PowerShell: `Get-FileHash .\meshcentral-<버전>.zip -Algorithm SHA256` 결과를 `SHA256SUMS.txt`의 값과 비교합니다.
+Windows PowerShell: `Get-FileHash .\stressman-<버전>.zip -Algorithm SHA256` 결과를 `SHA256SUMS.txt`의 값과 비교합니다.
 
 ## 3. 시스템 요구사항
 
@@ -57,8 +57,8 @@ sudo apt-get install -y nodejs
 
 # 2) 압축 해제
 sudo mkdir -p /opt
-sudo tar -xzf meshcentral-<버전>.tar.gz -C /opt
-cd /opt/meshcentral-<버전>
+sudo tar -xzf stressman-<버전>.tar.gz -C /opt
+cd /opt/stressman-<버전>
 
 # 3) 첫 실행 (인증서 생성 때문에 1~2분 정도 걸릴 수 있음)
 sudo node meshcentral/meshcentral.js
@@ -72,7 +72,7 @@ sudo node meshcentral/meshcentral.js
 ### 백그라운드 서비스(systemd)로 등록
 
 ```bash
-cd /opt/meshcentral-<버전>
+cd /opt/stressman-<버전>
 sudo node meshcentral/meshcentral.js --install     # 서비스 등록 및 시작
 sudo systemctl status meshcentral                  # 상태 확인
 sudo node meshcentral/meshcentral.js --uninstall   # 서비스 제거
@@ -81,10 +81,10 @@ sudo node meshcentral/meshcentral.js --uninstall   # 서비스 제거
 ## 5. 설치 방법 B — Windows 번들
 
 1. <https://nodejs.org>에서 Node.js 20 LTS 이상을 설치합니다.
-2. `meshcentral-<버전>.zip`을 `C:\MeshCentral` 같은 폴더에 풉니다.
+2. `stressman-<버전>.zip`을 `C:\StressMan` 같은 폴더에 풉니다.
 3. **관리자 권한** 명령 프롬프트에서 실행합니다.
    ```bat
-   cd C:\MeshCentral\meshcentral-<버전>
+   cd C:\StressMan\stressman-<버전>
    node meshcentral\meshcentral.js
    ```
 4. Windows 서비스로 등록하려면 다음 명령을 실행합니다. 처음 등록할 때 `node-windows` 모듈을 내려받으므로 인터넷 연결이 필요합니다.
@@ -98,11 +98,11 @@ sudo node meshcentral/meshcentral.js --uninstall   # 서비스 제거
 
 ```bash
 # 1) 이미지 불러오기
-gunzip -c meshcentral-<버전>-docker-image.tar.gz | docker load
-docker images meshcentral
+gunzip -c stressman-<버전>-docker-image.tar.gz | docker load
+docker images stressman
 
 # 2) 실행
-docker run -d --name meshcentral --restart unless-stopped \
+docker run -d --name stressman --restart unless-stopped \
   -p 443:443 -p 80:80 \
   -e HOSTNAME=mesh.example.com \
   -e DYNAMIC_CONFIG=true \
@@ -110,13 +110,13 @@ docker run -d --name meshcentral --restart unless-stopped \
   -v meshcentral-data:/opt/meshcentral/meshcentral-data \
   -v meshcentral-files:/opt/meshcentral/meshcentral-files \
   -v meshcentral-backups:/opt/meshcentral/meshcentral-backups \
-  meshcentral:<버전>
+  stressman:<버전>
 
 # 3) 로그 확인
-docker logs -f meshcentral
+docker logs -f stressman
 ```
 
-Windows에서는 `gunzip` 대신 `docker load -i meshcentral-<버전>-docker-image.tar.gz`를 사용해도 됩니다.
+Windows에서는 `gunzip` 대신 `docker load -i stressman-<버전>-docker-image.tar.gz`를 사용해도 됩니다.
 
 주요 환경 변수:
 
@@ -144,7 +144,7 @@ Windows에서는 `gunzip` 대신 `docker load -i meshcentral-<버전>-docker-ima
    node meshcentral/meshcentral.js --adminaccount admin        # 관리자 권한 부여
    node meshcentral/meshcentral.js --resetaccount admin --pass '<새 비밀번호>'  # 비밀번호 초기화 및 2FA 해제
    ```
-   Docker에서는 `docker exec -it meshcentral node /opt/meshcentral/meshcentral/meshcentral.js ...` 형태로 실행합니다.
+   Docker에서는 `docker exec -it stressman node /opt/meshcentral/meshcentral/meshcentral.js ...` 형태로 실행합니다.
 
 ## 8. 기본 설정 (`meshcentral-data/config.json`)
 
@@ -175,7 +175,7 @@ Windows에서는 `gunzip` 대신 `docker load -i meshcentral-<버전>-docker-ima
 - `cert`: 서버의 도메인 이름입니다. 점(`.`)이 없는 이름이면 서버가 **LAN 전용 모드**로 동작합니다.
 - `WANonly` / `LANonly`: 인터넷 전용 또는 내부망 전용 모드
 - `letsencrypt`: 공인 도메인과 80 포트가 열려 있으면 정식 인증서를 자동으로 발급받습니다.
-- 설정을 바꾼 뒤에는 서버를 재시작합니다(`systemctl restart meshcentral` 또는 `docker restart meshcentral`).
+- 설정을 바꾼 뒤에는 서버를 재시작합니다(`systemctl restart meshcentral` 또는 `docker restart stressman`).
 
 ## 9. 에이전트 설치 (원격 관리할 PC 등록)
 
@@ -190,7 +190,7 @@ Windows에서는 `gunzip` 대신 `docker load -i meshcentral-<버전>-docker-ima
 
 - **백업**: `meshcentral-data` 폴더(Docker는 `meshcentral-data` 볼륨) 전체를 복사합니다. 인증서와 DB가 모두 들어 있습니다. 자동 백업은 `meshcentral-backups`에 저장됩니다.
 - **업데이트(번들)**: 서버를 멈추고 새 릴리스의 `meshcentral/` 폴더로만 교체한 뒤 다시 시작합니다. `meshcentral-data`는 그대로 둡니다.
-- **업데이트(Docker)**: 새 이미지를 `docker load`로 불러온 뒤 기존 컨테이너를 지우고(`docker rm -f meshcentral`) 같은 볼륨으로 다시 `docker run` 합니다.
+- **업데이트(Docker)**: 새 이미지를 `docker load`로 불러온 뒤 기존 컨테이너를 지우고(`docker rm -f stressman`) 같은 볼륨으로 다시 `docker run` 합니다.
 - 웹 화면의 자동 업데이트 기능은 npm 공식 패키지 기준으로 동작합니다. 이 빌드를 계속 쓰려면 위 방법으로 수동 업데이트하세요.
 
 ## 11. 문제 해결
@@ -202,8 +202,8 @@ Windows에서는 `gunzip` 대신 `docker load -i meshcentral-<버전>-docker-ima
 | 첫 실행이 오래 걸림 | 인증서를 생성하는 중입니다. 1~2분 기다립니다. |
 | "LAN mode"로 표시됨 | `cert`에 점(`.`)이 들어간 도메인 이름을 설정합니다. |
 | 비밀번호 분실 | 서버를 멈추고 `--resetaccount <id> --pass <새 비밀번호>`를 실행합니다. |
-| 로그 확인 | 번들: 실행 콘솔 / `journalctl -u meshcentral -f`, Docker: `docker logs -f meshcentral` |
+| 로그 확인 | 번들: 실행 콘솔 / `journalctl -u meshcentral -f`, Docker: `docker logs -f stressman` |
 
 ## 12. 라이선스
 
-MeshCentral은 Apache License 2.0으로 배포됩니다(`meshcentral/LICENSE`). 이 릴리스는 원본 소스를 수정하지 않고 빌드했습니다.
+StressMan은 Apache License 2.0으로 배포되는 MeshCentral을 수정한 배포본입니다(`meshcentral/LICENSE`). 주요 변경: StressMan 브랜딩, 새 로그인/대시보드 테마, 웹서버 TLS 1.2 이상 + HSTS(`config.json`의 `"hsts": false`로 끌 수 있음), 일부 해시 연산을 Node 내장 `crypto`로 교체.

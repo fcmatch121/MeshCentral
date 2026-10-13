@@ -6,7 +6,7 @@ set -euo pipefail
 VERSION="${1:?version required}"
 OUT="$(mkdir -p "${2:?output dir required}" && cd "$2" && pwd)"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-NAME="meshcentral-${VERSION}"
+NAME="stressman-${VERSION}"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 
@@ -27,10 +27,10 @@ tar -C "$STAGE" -czf "$OUT/${NAME}.tar.gz" "$NAME"
 (cd "$STAGE" && zip -qr "$OUT/${NAME}.zip" "$NAME")
 
 echo "==> Building Docker image"
-docker build -f "$ROOT/docker/Dockerfile" -t "meshcentral:${VERSION}" "$ROOT"
-docker save "meshcentral:${VERSION}" | gzip > "$OUT/${NAME}-docker-image.tar.gz"
+docker build -f "$ROOT/docker/Dockerfile" -t "stressman:${VERSION}" "$ROOT"
+docker save "stressman:${VERSION}" | gzip > "$OUT/${NAME}-docker-image.tar.gz"
 
-cp "$ROOT/docs/fork-release/MANUAL-ko.md" "$OUT/MeshCentral-${VERSION}-Manual-ko.md"
+cp "$ROOT/docs/fork-release/MANUAL-ko.md" "$OUT/StressMan-${VERSION}-Manual-ko.md"
 
 echo "==> Checksums"
-(cd "$OUT" && sha256sum "${NAME}.tar.gz" "${NAME}.zip" "${NAME}-docker-image.tar.gz" "MeshCentral-${VERSION}-Manual-ko.md" > SHA256SUMS.txt && cat SHA256SUMS.txt)
+(cd "$OUT" && sha256sum "${NAME}.tar.gz" "${NAME}.zip" "${NAME}-docker-image.tar.gz" "StressMan-${VERSION}-Manual-ko.md" > SHA256SUMS.txt && cat SHA256SUMS.txt)
