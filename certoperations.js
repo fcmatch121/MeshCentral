@@ -235,12 +235,8 @@ module.exports.CertificateOperations = function (parent) {
                 for (var k in r.certs) {
                     if (r.certs[k].subject.hash != r.certs[k].issuer.hash) continue;
                     const certdata = obj.forge.asn1.toDer(obj.pki.certificateToAsn1(r.certs[k])).data;
-                    var md = obj.forge.md.sha256.create();
-                    md.update(certdata);
-                    acmconfig.sha256 = Buffer.from(md.digest().getBytes(), 'binary').toString('hex');
-                    md = obj.forge.md.sha1.create();
-                    md.update(certdata);
-                    acmconfig.sha1 = Buffer.from(md.digest().getBytes(), 'binary').toString('hex');
+                    acmconfig.sha256 = obj.crypto.createHash('sha256').update(Buffer.from(certdata, 'binary')).digest('hex');
+                    acmconfig.sha1 = obj.crypto.createHash('sha1').update(Buffer.from(certdata, 'binary')).digest('hex');
                 }
                 if ((acmconfig.sha1 == null) || (acmconfig.sha256 == null)) { amtacmactivation.acmCertErrors.push("Unable to compute Intel AMT activation certificate SHA1 and SHA256 hashes."); continue; }
 
@@ -591,85 +587,47 @@ module.exports.CertificateOperations = function (parent) {
         }
     }
 
-    // Return the SHA384 hash of the certificate public key
-    obj.getPublicKeyHash = function (cert) {
-        var publickey = obj.pki.certificateFromPem(cert).publicKey;
-        return obj.pki.getPublicKeyFingerprint(publickey, { encoding: 'hex', md: obj.forge.md.sha384.create() });
-    };
+    // Hash helpers use Node's built-in crypto (Node >= 20 always provides X509Certificate).
+    // Public key hashes match node-forge's getPublicKeyFingerprint: RSA keys hash the PKCS#1 DER, other keys the SPKI DER.
+    function publicKeyDer(pem) {
+        var cert = new obj.crypto.X509Certificate(pem);
+        return cert.publicKey.export({ type: ((cert.publicKey.asymmetricKeyType == 'rsa') ? 'pkcs1' : 'spki'), format: 'der' });
+    }
+
+    // Return the DER bytes of the first certificate in a PEM string
+    function certDer(cert) {
+        try { return new obj.crypto.X509Certificate(cert).raw; } catch (ex) { }
+        var x1 = cert.indexOf('-----BEGIN CERTIFICATE-----'), x2 = cert.indexOf('-----END CERTIFICATE-----');
+        if ((x1 >= 0) && (x2 > x1)) { return Buffer.from(cert.substring(x1 + 27, x2), 'base64'); }
+        console.log("ERROR: Unable to decode certificate.");
+        return null;
+    }
+
+    function certHash(cert, alg, encoding) {
+        var der = certDer(cert);
+        return (der == null) ? null : obj.crypto.createHash(alg).update(der).digest(encoding);
+    }
+
+    // Return the SHA384 hash of the certificate public key, return hex
+    obj.getPublicKeyHash = function (cert) { return obj.crypto.createHash('sha384').update(publicKeyDer(cert)).digest('hex'); };
 
     // Return the SHA1 hash of the certificate, return hex
-    obj.getCertHashSha1 = function (cert) {
-        try {
-            var md = obj.forge.md.sha1.create();
-            md.update(obj.forge.asn1.toDer(obj.pki.certificateToAsn1(obj.pki.certificateFromPem(cert))).getBytes());
-            return md.digest().toHex();
-        } catch (ex) {
-            // If this is not an RSA certificate, hash the raw PKCS7 out of the PEM file
-            var x1 = cert.indexOf('-----BEGIN CERTIFICATE-----'), x2 = cert.indexOf('-----END CERTIFICATE-----');
-            if ((x1 >= 0) && (x2 > x1)) {
-                return obj.crypto.createHash('sha1').update(Buffer.from(cert.substring(x1 + 27, x2), 'base64')).digest('hex');
-            } else { console.log("ERROR: Unable to decode certificate."); return null; }
-        }
-    };
+    obj.getCertHashSha1 = function (cert) { return certHash(cert, 'sha1', 'hex'); };
 
     // Return the SHA256 hash of the certificate, return hex
-    obj.getCertHashSha256 = function (cert) {
-        try {
-            var md = obj.forge.md.sha256.create();
-            md.update(obj.forge.asn1.toDer(obj.pki.certificateToAsn1(obj.pki.certificateFromPem(cert))).getBytes());
-            return md.digest().toHex();
-        } catch (ex) {
-            // If this is not an RSA certificate, hash the raw PKCS7 out of the PEM file
-            var x1 = cert.indexOf('-----BEGIN CERTIFICATE-----'), x2 = cert.indexOf('-----END CERTIFICATE-----');
-            if ((x1 >= 0) && (x2 > x1)) {
-                return obj.crypto.createHash('sha256').update(Buffer.from(cert.substring(x1 + 27, x2), 'base64')).digest('hex');
-            } else { console.log("ERROR: Unable to decode certificate."); return null; }
-        }
-    };
+    obj.getCertHashSha256 = function (cert) { return certHash(cert, 'sha256', 'hex'); };
 
     // Return the SHA384 hash of the certificate, return hex
-    obj.getCertHash = function (cert) {
-        try {
-            var md = obj.forge.md.sha384.create();
-            md.update(obj.forge.asn1.toDer(obj.pki.certificateToAsn1(obj.pki.certificateFromPem(cert))).getBytes());
-            return md.digest().toHex();
-        } catch (ex) {
-            // If this is not an RSA certificate, hash the raw PKCS7 out of the PEM file
-            var x1 = cert.indexOf('-----BEGIN CERTIFICATE-----'), x2 = cert.indexOf('-----END CERTIFICATE-----');
-            if ((x1 >= 0) && (x2 > x1)) {
-                return obj.crypto.createHash('sha384').update(Buffer.from(cert.substring(x1 + 27, x2), 'base64')).digest('hex');
-            } else { console.log("ERROR: Unable to decode certificate."); return null; }
-        }
-    };
+    obj.getCertHash = function (cert) { return certHash(cert, 'sha384', 'hex'); };
 
-    // Return the SHA384 hash of the certificate public key
-    obj.getPublicKeyHashBinary = function (pem) {
-        const { X509Certificate } = require('crypto');
-        if (X509Certificate == null) {
-            // This version of NodeJS (<v15.6.0) does not support X509 certs, use Node-Forge instead which only supports RSA certs.
-            return obj.pki.getPublicKeyFingerprint(obj.pki.certificateFromPem(pem).publicKey, { encoding: 'binary', md: obj.forge.md.sha384.create() });
-        } else {
-            // This version of NodeJS supports x509 certificates
-            var cert = new X509Certificate(pem);
-            return obj.crypto.createHash('sha384').update(cert.publicKey.export({ type: ((cert.publicKey.asymmetricKeyType == 'rsa') ? 'pkcs1' : 'spki'), format: 'der' })).digest('binary');
-        }
-    };
+    // Return the SHA384 hash of the certificate public key, return binary
+    obj.getPublicKeyHashBinary = function (pem) { return obj.crypto.createHash('sha384').update(publicKeyDer(pem)).digest('binary'); };
+
+    // Return the SHA256 hash of the certificate public key, return binary
+    obj.getPublicKeyHashBinary256 = function (pem) { return obj.crypto.createHash('sha256').update(publicKeyDer(pem)).digest('binary'); };
 
     // Return the SHA384 hash of the certificate, return binary
-    obj.getCertHashBinary = function (cert) {
-        try {
-            // If this is a RSA certificate, we can use Forge to hash the ASN1
-            var md = obj.forge.md.sha384.create();
-            md.update(obj.forge.asn1.toDer(obj.pki.certificateToAsn1(obj.pki.certificateFromPem(cert))).getBytes());
-            return md.digest().getBytes();
-        } catch (ex) {
-            // If this is not an RSA certificate, hash the raw PKCS7 out of the PEM file
-            var x1 = cert.indexOf('-----BEGIN CERTIFICATE-----'), x2 = cert.indexOf('-----END CERTIFICATE-----');
-            if ((x1 >= 0) && (x2 > x1)) {
-                return obj.crypto.createHash('sha384').update(Buffer.from(cert.substring(x1 + 27, x2), 'base64')).digest('binary');
-            } else { console.log("ERROR: Unable to decode certificate."); return null; }
-        }
-    };
+    obj.getCertHashBinary = function (cert) { return certHash(cert, 'sha384', 'binary'); };
 
     // Create a self-signed certificate
     obj.GenerateRootCertificate = function (addThumbPrintToName, commonName, country, organization, strong) {

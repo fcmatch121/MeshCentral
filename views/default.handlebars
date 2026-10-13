@@ -168,7 +168,7 @@
             </div>
             <p id="logoutControl"><span id=logoutControlSpan class="logoncontrolspan"></span><span id=idleTimeoutNotify style="color:yellow"></span></p>
             <div class=textnewui id=textnewui onmouseup=toggleBootstrapUIMode() onkeypress="if (event.key=='Enter') { toggleBootstrapUIMode(); }">
-                <b>Try the new MeshCentral UI</b>
+                <b>Try the new StressMan UI</b>
             </div>
         </div>
         <div id="page_leftbar">
@@ -6279,7 +6279,7 @@
             var op = Q('d2deviceop').value, title = Q('dp2notifyTitle').value, msg = Q('d2notifyMsg').value, chkNodeIds = getCheckedDevices(), timeout = parseFloat(Q('d2notifyTimeout').value);
             if (msg.length == 0) return;
             if (title == '') { title = decodeURIComponent('{{{extitle}}}'); }
-            if (title == '') { title = "MeshCentral"; }
+            if (title == '') { title = "StressMan"; }
             if (isNaN(timeout)) { timeout = 2; }
             if (op == 1) { // MessageBox
                 for (var i = 0; i < chkNodeIds.length; i++) { meshserver.send({ action: 'msg', type: 'messagebox', nodeid: chkNodeIds[i], title: title, msg: msg, timeout: (timeout * 60000) }); }
@@ -8669,7 +8669,7 @@
 
         function deviceMessageFunctionEx() {
             var title = decodeURIComponent('{{{extitle}}}'), timeout = parseFloat(Q('d2devTimeout').value);
-            if (title == '') { title = "MeshCentral"; }
+            if (title == '') { title = "StressMan"; }
             if(isNaN(timeout)){ timeout = 2; }
             if (currentNode.pmt == 1) {
                 meshserver.send({ action: 'pushmessage', nodeid: currentNode._id, title: title, msg: Q('d2devMessage').value });
@@ -8731,7 +8731,7 @@
             var op = Q('d2deviceop').value, title = Q('dp2notifyTitle').value, msg = Q('d2notifyMsg').value, timeout = parseFloat(Q('d2notifyTimeout').value);
             if (msg.length == 0) return;
             if (title == '') { title = decodeURIComponent('{{{extitle}}}'); }
-            if (title == '') { title = "MeshCentral"; }
+            if (title == '') { title = "StressMan"; }
             if(isNaN(timeout)){ timeout = 2; }
             if (op == 1) { // MessageBox
                 meshserver.send({ action: 'msg', type: 'messagebox', nodeid: currentNode._id, title: title, msg: msg, timeout: (timeout * 60000) });

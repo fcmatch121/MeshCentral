@@ -538,7 +538,7 @@ module.exports.CreateAmtRedirect = function (module, domain, user, webserver, me
     obj.RedirectStartKvm = String.fromCharCode(0x10, 0x01, 0x00, 0x00, 0x4b, 0x56, 0x4d, 0x52);
     obj.RedirectStartIder = String.fromCharCode(0x10, 0x00, 0x00, 0x00, 0x49, 0x44, 0x45, 0x52);
 
-    function hex_md5(str) { return meshcentral.certificateOperations.forge.md.md5.create().update(str).digest().toHex(); }
+    function hex_md5(str) { return obj.crypto.createHash('md5').update(Buffer.from(str, 'binary')).digest('hex'); }
 
     return obj;
 }

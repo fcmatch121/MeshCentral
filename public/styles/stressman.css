@@ -1,0 +1,330 @@
+/* StressMan brand chrome for the modern UI (default3). Loaded after style-bootstrap.css. */
+:root {
+    --sm-bg1: #0f1226;
+    --sm-bg2: #2a1a5e;
+    --sm-bg3: #0e4d64;
+    --sm-accent: #6d8bff;
+    --sm-accent2: #41e0c8;
+}
+
+#masthead {
+    background-color: var(--sm-bg1);
+    background-image: radial-gradient(circle at 85% -40%, rgba(109, 139, 255, 0.45), transparent 55%), linear-gradient(110deg, var(--sm-bg1) 0%, var(--sm-bg2) 55%, var(--sm-bg3) 100%);
+    box-shadow: 0 2px 12px rgba(10, 12, 40, 0.35);
+}
+
+#masthead .title {
+    color: #fff;
+    font-family: "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    background: linear-gradient(90deg, #ffffff 0%, #b9c6ff 60%, var(--sm-accent2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#masthead .title2 {
+    color: rgba(232, 236, 255, 0.75);
+    font-family: "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+    text-shadow: none;
+}
+
+#page_leftbar {
+    background: var(--sm-bg1);
+    background: linear-gradient(to bottom, var(--sm-bg2) 0%, var(--sm-bg1) 100%);
+    border-right: 1px solid rgba(109, 139, 255, 0.18);
+}
+
+#page_leftbar .nav-link {
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#page_leftbar .nav-link:hover {
+    background-color: rgba(109, 139, 255, 0.18);
+    border-radius: 10px 0 0 10px;
+}
+
+nav .lbbuttonsel,
+nav .lbbuttonsel2 {
+    border-radius: 10px 0 0 10px;
+    background: linear-gradient(90deg, #ffffff 0%, #e8ecff 100%);
+    color: var(--sm-bg2) !important;
+    box-shadow: inset 3px 0 0 var(--sm-accent2);
+}
+
+#footer {
+    background-color: var(--sm-bg1);
+    background-image: linear-gradient(90deg, var(--sm-bg1) 0%, var(--sm-bg2) 60%, var(--sm-bg3) 100%);
+    border-top: 1px solid rgba(109, 139, 255, 0.18);
+}
+
+#footer a,
+#footer a:hover {
+    color: var(--sm-accent2);
+}
+
+/* Content area */
+#column_l {
+    background-color: #f4f6fb;
+}
+
+.night #column_l {
+    background-color: #0b0d1a;
+}
+
+#column_l ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+#column_l ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#column_l ::-webkit-scrollbar-thumb {
+    background: rgba(109, 139, 255, 0.25);
+    border-radius: 10px;
+}
+
+/* Device list toolbar */
+#devListToolbarSpan {
+    background: var(--bs-body-bg);
+    border: 1px solid rgba(109, 139, 255, 0.18);
+    border-radius: 14px;
+    padding: 8px 10px !important;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 14px rgba(15, 18, 38, 0.06);
+}
+
+/* Device group headers */
+#xdevices .DevSt {
+    border-bottom: none;
+    padding: 12px 4px 6px !important;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+#xdevices .DevSt a {
+    margin-left: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(109, 139, 255, 0.12);
+    color: #4b5fd6;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+#xdevices .DevSt a:hover {
+    background: rgba(109, 139, 255, 0.25);
+}
+
+.night #xdevices .DevSt a {
+    color: #a9b8ff;
+    background: rgba(109, 139, 255, 0.18);
+}
+
+#xdevices .devHeaderx {
+    color: var(--bs-secondary-color);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* Device tiles: cards instead of gray bevels */
+#xdevices div[name^="xxdevice"] {
+    height: 60px !important;
+    padding: 4px !important;
+}
+
+#xdevices div[name^="xxdevice"] > table {
+    border-collapse: separate;
+    overflow: hidden;
+    background: var(--bs-body-bg);
+    border: 1px solid rgba(15, 18, 38, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15, 18, 38, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+#xdevices div[name^="xxdevice"] > table:hover {
+    transform: translateY(-2px);
+    border-color: rgba(109, 139, 255, 0.55);
+    box-shadow: 0 8px 20px rgba(42, 26, 94, 0.15);
+}
+
+.night #xdevices div[name^="xxdevice"] > table {
+    background: #151833;
+    border-color: rgba(109, 139, 255, 0.2);
+}
+
+#xdevices .g1t,
+#xdevices .g2t,
+#xdevices .g1s,
+#xdevices .g2s,
+#p2meshes .g2 {
+    background: transparent !important;
+}
+
+#xdevices .e2t,
+#xdevices .e2s {
+    background-color: transparent !important;
+}
+
+#xdevices .e1t {
+    margin-top: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Dark mode panels */
+[data-bs-theme="dark"] #xdevices,
+[data-bs-theme="dark"] #NoMeshesPanel,
+[data-bs-theme="dark"] #serverStatsTable,
+[data-bs-theme="dark"] #p2info,
+[data-bs-theme="dark"] #p6info,
+[data-bs-theme="dark"] #p10info,
+[data-bs-theme="dark"] #p17info,
+[data-bs-theme="dark"] #p18info,
+[data-bs-theme="dark"] #p20info,
+[data-bs-theme="dark"] #p21info,
+[data-bs-theme="dark"] #p30info,
+[data-bs-theme="dark"] #p51info {
+    background-color: #12152b;
+    border-radius: 14px;
+}
+
+/* Device group cards (My Account) */
+#p2meshes .card {
+    border: 1px solid rgba(15, 18, 38, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 18, 38, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+#p2meshes .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(109, 139, 255, 0.55);
+    box-shadow: 0 8px 20px rgba(42, 26, 94, 0.15);
+}
+
+#p2meshes .card .card-body {
+    padding: 8px 0 !important;
+}
+
+#p2meshes .card .e1 {
+    font-weight: 600;
+}
+
+.night #p2meshes .card {
+    background: #151833;
+    border-color: rgba(109, 139, 255, 0.2);
+}
+
+/* Controls (shape only, colors still follow the selected Bootswatch theme) */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.btn-sm {
+    border-radius: 8px;
+}
+
+.btn:not(.btn-link):not(:disabled):hover {
+    box-shadow: 0 4px 12px rgba(15, 18, 38, 0.18);
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+}
+
+.form-control-sm,
+.form-select-sm {
+    border-radius: 8px;
+}
+
+.table-hover > tbody > tr:hover > * {
+    --bs-table-hover-bg: rgba(109, 139, 255, 0.08);
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(10, 12, 40, 0.18);
+    overflow: hidden;
+}
+
+.nav-tabs .nav-link {
+    border-radius: 10px 10px 0 0;
+}
+
+.nav-tabs .nav-link.active {
+    box-shadow: inset 0 -3px 0 var(--sm-accent);
+}
+
+/* Dialogs */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(10, 12, 40, 0.35);
+}
+
+#dialogHeader {
+    margin-bottom: 0;
+    border-bottom: none;
+    border-radius: 0;
+    background-color: var(--sm-bg1);
+    background-image: linear-gradient(110deg, var(--sm-bg1) 0%, var(--sm-bg2) 60%, var(--sm-bg3) 100%);
+}
+
+.modal-backdrop.show {
+    opacity: 0.55;
+    backdrop-filter: blur(3px);
+}
+
+/* Top menu and device tabs */
+#topbar {
+    background-color: #f4f6fb;
+}
+
+.night #topbar {
+    background-color: #0b0d1a;
+}
+
+#topbar .style3,
+#topbar .style3x {
+    background: transparent;
+}
+
+#topbar .style3x {
+    border-radius: 0 0 10px 10px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#topbar .style3x:hover {
+    background-color: rgba(109, 139, 255, 0.15);
+}
+
+#topbar .style3x.semiselect {
+    background-color: rgba(109, 139, 255, 0.25);
+    color: var(--bs-body-color);
+}
+
+#topbar .style3x.fullselect,
+#topbar .style3sel {
+    border-radius: 0 0 10px 10px;
+    background-color: var(--sm-bg2);
+    background-image: linear-gradient(110deg, var(--sm-bg2) 0%, var(--sm-bg3) 100%);
+    color: #fff;
+}
+
+.night #p2meshes .card .row > div {
+    background-color: transparent !important;
+}
