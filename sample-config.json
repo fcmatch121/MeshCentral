@@ -16,6 +16,7 @@
     "": {
       "_title": "MyServer",
       "_title2": "Servername",
+      "sitestyle": 3,
       "_minify": true,
       "_newAccounts": true,
       "_userNameIsEmail": true
