@@ -356,8 +356,8 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
     // If we are running the legacy swarm server, compute the hash for that certificate
     if (parent.certificates.swarmserver != null) {
         obj.swarmCertificateAsn1 = parent.certificateOperations.forge.asn1.toDer(parent.certificateOperations.forge.pki.certificateToAsn1(parent.certificateOperations.forge.pki.certificateFromPem(parent.certificates.swarmserver.cert))).getBytes();
-        obj.swarmCertificateHash384 = parent.certificateOperations.forge.pki.getPublicKeyFingerprint(parent.certificateOperations.forge.pki.certificateFromPem(obj.certificates.swarmserver.cert).publicKey, { md: parent.certificateOperations.forge.md.sha384.create(), encoding: 'binary' });
-        obj.swarmCertificateHash256 = parent.certificateOperations.forge.pki.getPublicKeyFingerprint(parent.certificateOperations.forge.pki.certificateFromPem(obj.certificates.swarmserver.cert).publicKey, { md: parent.certificateOperations.forge.md.sha256.create(), encoding: 'binary' });
+        obj.swarmCertificateHash384 = parent.certificateOperations.getPublicKeyHashBinary(obj.certificates.swarmserver.cert);
+        obj.swarmCertificateHash256 = parent.certificateOperations.getPublicKeyHashBinary256(obj.certificates.swarmserver.cert);
     }
 
     // Main lists
