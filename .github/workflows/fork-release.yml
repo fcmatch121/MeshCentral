@@ -1,0 +1,52 @@
+name: Fork Release
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to create (e.g. 1.2.6)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20.x'
+
+      - name: Package release assets
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          .github/scripts/package-release.sh "$VERSION" dist
+
+      - name: Prepare release notes
+        run: sed "s/{{VERSION}}/${VERSION}/g" docs/fork-release/RELEASE_NOTES-ko.md > dist/RELEASE_NOTES.md
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          name: MeshCentral ${{ env.VERSION }} (fcmatch121 build)
+          body_path: dist/RELEASE_NOTES.md
+          files: |
+            dist/meshcentral-${{ env.VERSION }}.tar.gz
+            dist/meshcentral-${{ env.VERSION }}.zip
+            dist/meshcentral-${{ env.VERSION }}-docker-image.tar.gz
+            dist/MeshCentral-${{ env.VERSION }}-Manual-ko.md
+            dist/SHA256SUMS.txt
