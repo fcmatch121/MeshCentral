@@ -3,25 +3,25 @@
     "filename": "MeshService.exe",
     "hash": "BCAF079DA1A31D9BC59A6500F5DC59CAF501AE89876E2749CA1078A91D54E873CAEF9895490B9F472B05C0521F109C9B",
     "size": 3922432,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "4": {
     "filename": "MeshService64.exe",
     "hash": "07687F87C7B244196252185B945164C49726798EE0F2757DB1585B106F3AFA87CEAA6AAC76AA5B0A7B1E0B2F48A5EEDA",
     "size": 3529728,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "5": {
     "filename": "meshagent_x86",
     "hash": "48ED2152829427895F2F0904BD651E79353389FAA5FAF04B59A5673D9696440ECD8D25A7D7C0A855ED5C423D66C270DF",
     "size": 4370408,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "6": {
     "filename": "meshagent_x86-64",
     "hash": "6C5FC9F392E3EB7F2D8E8E70AC2DCAC7ACFCC37B54CB5C30F93676F54CA79F9FD458C855062FDAE0C80125F3DE557A46",
     "size": 4093304,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "7": {
     "filename": "meshagent_mips",
@@ -51,7 +51,7 @@
     "filename": "meshagent_osx-x86-64",
     "hash": "F09FBF3209630A43ECAAB8A2FB5E922D1808B4B8845731C28B2656EAEC2F9219E5FB09CDBADDFDA6B7A5F84609AC0E96",
     "size": 4064576,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "18": {
     "filename": "meshagent_poky64",
@@ -63,13 +63,13 @@
     "filename": "meshagent_x86_nokvm",
     "hash": "57DAE4B92EDCA0B7547DBE020F4C2D30B72416AEEFC4D8BB4986AA85EC9647E9FE1085CA087A097D4610B1042216A792",
     "size": 3991336,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "20": {
     "filename": "meshagent_x86-64_nokvm",
     "hash": "D1AF99E818E4D0D2C4EA8F28A3C29754F208AFAD1B0D7D0BBF2239FBE1B96800E5D411BF39C298909DC6F45F88877103",
     "size": 3720440,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "24": {
     "filename": "meshagent_arm-linaro",
@@ -81,7 +81,7 @@
     "filename": "meshagent_armhf",
     "hash": "AAA621F39E6E8AC56CCD9BD235F8C060CF5F9E6C5FBEDB6FCF18B6D7E695E691EEC4994BB914A00E02D53911EA714D99",
     "size": 3438264,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "27": {
     "filename": "meshagent_armhf2",
@@ -99,19 +99,19 @@
     "filename": "meshagent_osx-arm-64",
     "hash": "348069DFE3D6E9D347BAC1B1E28D4218F2BD2716C7E8E8B9F0A974CBD2C4D2B452BAFAE6C4B511FDE25B8E82FA7D3873",
     "size": 3670840,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "30": {
     "filename": "meshagent_freebsd_x86-64",
     "hash": "5EE2FC6A9FC84939999EF2555CF599133F46E0FE4DF0C52B07B3DFBB2561D8F8B1EEB951B4E4F3A0AA213AC8268B9EB7",
     "size": 3775728,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "32": {
     "filename": "meshagent_aarch64",
     "hash": "64D81ABFC5D7C85095F8353B4EB911B215FCD14269FE7506CFAD8ED6E77F2FA4FFC6FBCF2AA42F5EF50A7B46787F23DF",
     "size": 3691176,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "40": {
     "filename": "meshagent_mipsel24kc",
@@ -129,7 +129,7 @@
     "filename": "MeshServiceARM64.exe",
     "hash": "4FD3FE459975AF21CA558A63C2337A83CAC231334837A79DCE0ABFC8F6C78A6F3B60C6E52E6955D5708B6BABEEBADD20",
     "size": 3641856,
-    "mtime": "2026-10-13T14:45:13Z"
+    "mtime": "2026-10-13T15:12:03Z"
   },
   "45": {
     "filename": "meshagent_riscv64",
