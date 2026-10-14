@@ -1501,7 +1501,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
                         // Get the agent connection server name
                         var serverName = obj.getWebServerName(domain, req);
-                        if (typeof obj.args.agentaliasdns == 'string') { serverName = obj.args.agentaliasdns; }
+                        var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { serverName = agentDnsOverride; }
 
                         // Build the connection URL. If we are using a sub-domain or one with a DNS, we need to craft the URL correctly.
                         var xdomain = (domain.dns == null) ? domain.id : '';
@@ -2546,7 +2546,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
             // Build the mobile agent URL, this is used to connect mobile devices
             var agentServerName = obj.getWebServerName(domain, req);
-            if (typeof obj.args.agentaliasdns == 'string') { agentServerName = obj.args.agentaliasdns; }
+            var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { agentServerName = agentDnsOverride; }
             var xdomain = (domain.dns == null) ? domain.id : '';
             var agentHttpsPort = ((obj.args.aliasport == null) ? obj.args.port : obj.args.aliasport); // Use HTTPS alias port is specified
             if (obj.args.agentport != null) { agentHttpsPort = obj.args.agentport; } // If an agent only port is enabled, use that.
@@ -2569,7 +2569,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
             // Build the mobile agent URL, this is used to connect mobile devices
             var agentServerName = obj.getWebServerName(domain, req);
-            if (typeof obj.args.agentaliasdns == 'string') { agentServerName = obj.args.agentaliasdns; }
+            var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { agentServerName = agentDnsOverride; }
             var xdomain = (domain.dns == null) ? domain.id : '';
             var agentHttpsPort = ((obj.args.aliasport == null) ? obj.args.port : obj.args.aliasport); // Use HTTPS alias port is specified
             if (obj.args.agentport != null) { agentHttpsPort = obj.args.agentport; } // If an agent only port is enabled, use that.
@@ -6384,7 +6384,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
                 // Get the agent connection server name
                 var serverName = obj.getWebServerName(domain, req);
-                if (typeof obj.args.agentaliasdns == 'string') { serverName = obj.args.agentaliasdns; }
+                var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { serverName = agentDnsOverride; }
 
                 // Build the agent connection URL. If we are using a sub-domain or one with a DNS, we need to craft the URL correctly.
                 var xdomain = (domain.dns == null) ? domain.id : '';
@@ -6782,6 +6782,14 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         return obj.certificates.CommonName;
     }
 
+    // Get the server DNS name agents should connect to. Priority: domain.agentaliasdns (config.json domain) > config.settings.agentaliasdns > command line --agentaliasdns.
+    obj.getAgentServerDns = function (domain) {
+        if ((domain != null) && (typeof domain.agentaliasdns == 'string')) { return domain.agentaliasdns; }
+        if ((obj.parent.config.settings != null) && (typeof obj.parent.config.settings.agentaliasdns == 'string')) { return obj.parent.config.settings.agentaliasdns; }
+        if (typeof obj.args.agentaliasdns == 'string') { return obj.args.agentaliasdns; }
+        return null;
+    }
+
     // Return true if this is an allowed HTTP request origin hostname.
     obj.CheckWebServerOriginName = function (domain, req) {
         if (domain.allowedorigin === true) return true; // Ignore origin
@@ -6826,7 +6834,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
         // Get the agent connection server name
         var serverName = obj.getWebServerName(domain, req);
-        if (typeof obj.args.agentaliasdns == 'string') { serverName = obj.args.agentaliasdns; }
+        var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { serverName = agentDnsOverride; }
 
         // Build the agent connection URL. If we are using a sub-domain or one with a DNS, we need to craft the URL correctly.
         var xdomain = (domain.dns == null) ? domain.id : '';
@@ -6941,7 +6949,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
 
         // Get the agent connection server name
         var serverName = obj.getWebServerName(domain, req);
-        if (typeof obj.args.agentaliasdns == 'string') { serverName = obj.args.agentaliasdns; }
+        var agentDnsOverride = obj.getAgentServerDns(domain); if (agentDnsOverride != null) { serverName = agentDnsOverride; }
 
         // Build the agent connection URL. If we are using a sub-domain or one with a DNS, we need to craft the URL correctly.
         var xdomain = (domain.dns == null) ? domain.id : '';
@@ -9551,7 +9559,8 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
         var agentAliasPort = null;
         var agentAliasDns = null;
         if (args.agentaliasport != null) { agentAliasPort = args.agentaliasport; }
-        if (args.agentaliasdns != null) { agentAliasDns = args.agentaliasdns; }
+        if ((obj.parent.config.settings != null) && (typeof obj.parent.config.settings.agentaliasdns == 'string')) { agentAliasDns = obj.parent.config.settings.agentaliasdns; }
+        if (agentAliasDns == null) { agentAliasDns = args.agentaliasdns; }
         if (obj.tlsAltServer != null) {
             if (obj.args.lanonly == true) {
                 obj.tcpAltServer = obj.tlsAltServer.listen(port, addr, function () { console.log('MeshCentral HTTPS agent-only server running on port ' + port + ((agentAliasPort != null) ? (', alias port ' + agentAliasPort) : '') + '.'); });

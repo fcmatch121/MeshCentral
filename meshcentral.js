@@ -3319,7 +3319,7 @@ function CreateMeshCentralServer(config, args) {
         const signDesc = (domain.title ? domain.title : agentSignCertInfo.cert.subject.hash);
         const httpsPort = ((obj.args.aliasport == null) ? obj.args.port : obj.args.aliasport); // Use HTTPS alias port is specified
         var httpsHost = ((domain.dns != null) ? domain.dns : obj.certificates.CommonName);
-        if (obj.args.agentaliasdns != null) { httpsHost = obj.args.agentaliasdns; }
+        var agentDnsOverride = null; if (typeof domain.agentaliasdns == 'string') { agentDnsOverride = domain.agentaliasdns; } else if ((obj.config.settings != null) && (typeof obj.config.settings.agentaliasdns == 'string')) { agentDnsOverride = obj.config.settings.agentaliasdns; } if (agentDnsOverride == null) { agentDnsOverride = obj.args.agentaliasdns; } if (agentDnsOverride != null) { httpsHost = agentDnsOverride; }
         var signUrl = 'https://' + httpsHost;
         if (httpsPort != 443) { signUrl += ':' + httpsPort; }
         var xdomain = (domain.dns == null) ? domain.id : '';
