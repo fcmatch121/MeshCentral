@@ -6311,7 +6311,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
             setContentDispositionHeader(res, 'application/octet-stream', meshagentFilename, null, 'meshagent');
             if (argentInfo.mtime != null) { res.setHeader('Last-Modified', argentInfo.mtime.toUTCString()); }
             res.statusCode = 200;
-            obj.parent.exeHandler.streamExeWithJavaScript({ platform: argentInfo.platform, sourceFileName: argentInfo.path, destinationStream: res, js: Buffer.from(js, 'utf8'), peinfo: argentInfo.pe });
+            obj.parent.exeHandler.streamExeWithJavaScript({ platform: argentInfo.platform, sourceFileName: argentInfo.path, destinationStream: res, encryptJs: ((domain.agentcorejsencryption != null) ? (domain.agentcorejsencryption == true) : ((obj.parent.config.settings != null && obj.parent.config.settings.agentcorejsencryption != null) ? (obj.parent.config.settings.agentcorejsencryption == true) : true)), js: Buffer.from(js, 'utf8'), peinfo: argentInfo.pe });
         } else if (req.query.id != null) {
             // Send a specific mesh agent back
             var argentInfo = obj.parent.meshAgentBinaries[req.query.id];
@@ -6507,7 +6507,7 @@ module.exports.CreateWebServer = function (parent, db, args, certificates, doneF
                 res.sendFile(argentInfo.signedMeshCmdPath);
             } else {
                 // Merge JavaScript to a unsigned agent and send that.
-                obj.parent.exeHandler.streamExeWithJavaScript({ platform: argentInfo.platform, sourceFileName: argentInfo.path, destinationStream: res, js: Buffer.from(obj.parent.defaultMeshCmd, 'utf8'), peinfo: argentInfo.pe });
+                obj.parent.exeHandler.streamExeWithJavaScript({ platform: argentInfo.platform, sourceFileName: argentInfo.path, destinationStream: res, encryptJs: ((domain.agentcorejsencryption != null) ? (domain.agentcorejsencryption == true) : ((obj.parent.config.settings != null && obj.parent.config.settings.agentcorejsencryption != null) ? (obj.parent.config.settings.agentcorejsencryption == true) : true)), js: Buffer.from(obj.parent.defaultMeshCmd, 'utf8'), peinfo: argentInfo.pe });
             }
             return;
         } else if (req.query.meshaction != null) {

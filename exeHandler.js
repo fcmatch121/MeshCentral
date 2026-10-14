@@ -25,6 +25,7 @@ limitations under the License.
 const exeJavaScriptGuid = 'B996015880544A19B7F7E9BE44914C18';
 const exeMeshPolicyGuid = 'B996015880544A19B7F7E9BE44914C19';
 const exeNullPolicyGuid = 'B996015880544A19B7F7E9BE44914C20';
+const obfCoreKey = [0xA7, 0x31, 0xC4, 0x0E]; // Must match the agent-side obf_core.h decrypt hook
 
 
 // Changes a Windows Executable to add JavaScript inside of it.
@@ -54,11 +55,18 @@ module.exports.streamExeWithJavaScript = function (options) {
         options.destinationStream.sourceStream = require('fs').createReadStream(options.sourceFileName, { flags: 'r' });
         options.destinationStream.sourceStream.options = options;
         options.destinationStream.sourceStream.on('end', function () {
-            // Once the binary is streamed, write the msh + length + guid in that order.
-            this.options.destinationStream.write(this.options.js); // JS content
+            // Once the binary is streamed, write the js + length + guid in that order.
+            var jsbuf = Buffer.isBuffer(this.options.js) ? this.options.js : Buffer.from(this.options.js, 'utf8');
+            var szVal = jsbuf.length;
+            if (this.options.encryptJs == true) {
+                // XOR-obfuscate the embedded JS and flag it, so obfuscated agents (obf_core.h hook) decrypt it on load.
+                for (var i = 0; i < jsbuf.length; ++i) { jsbuf[i] ^= (obfCoreKey[i & 3] ^ ((i * 31) & 0xFF)); }
+                szVal |= 0x01000000; // OBF_CORE_FLAG_ENCRYPTED
+            }
+            this.options.destinationStream.write(jsbuf); // JS content
             var sz = Buffer.alloc(4);
-            sz.writeUInt32BE(this.options.js.length, 0);
-            this.options.destinationStream.write(sz); // Length in small endian
+            sz.writeUInt32BE(szVal, 0);
+            this.options.destinationStream.write(sz); // Length + flag
             this.options.destinationStream.end(Buffer.from(exeJavaScriptGuid, 'hex')); // GUID
         });
         // Pipe the entire source binary without ending the stream.
